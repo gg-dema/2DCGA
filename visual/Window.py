@@ -3,11 +3,14 @@ from OpenGL.GL import *
 import ctypes
 import math
 import random
+from pathlib import Path
+
 
 from visual.objects.points import Point
 from visual.objects.circles import Circle
 from visual.objects.lines import Line
 from visual.objects.frames import Frame
+from visual.objects.point_pairs import PointPair
 from visual.utils import ortho, fit_bounds, grid_lines, axis_lines, nice_step
 
 # object sizes (point/circle radius, line width) are in screen pixels, not
@@ -33,14 +36,14 @@ GRID_TARGET_SPACING_PX = 60.0
 
 
 main_shaders_path = {
-        "points_vertex": "visual/shaders/point.vert",
-        "points_fragment": "visual/shaders/point.frag",
+        "points_vertex": Path(__file__).parents[1] / "visual/shaders/point.vert",
+        "points_fragment": Path(__file__).parents[1] / "visual/shaders/point.frag",
 
-        "circles_vertex": "visual/shaders/circle.vert",
-        "circles_fragment": "visual/shaders/circle.frag",
+        "circles_vertex": Path(__file__).parents[1] / "visual/shaders/circle.vert",
+        "circles_fragment": Path(__file__).parents[1] / "visual/shaders/circle.frag",
 
-        "lines_vertex": "visual/shaders/line.vert",
-        "lines_fragment": "visual/shaders/line.frag"    
+        "lines_vertex": Path(__file__).parents[1] / "visual/shaders/line.vert",
+        "lines_fragment": Path(__file__).parents[1] / "visual/shaders/line.frag"    
     }
 
 def read_shader_source(file_path):
@@ -131,6 +134,14 @@ class Window:
                 vertex_src=read_shader_source(self.shader_paths_dict["lines_vertex"]),
                 fragment_src=read_shader_source(self.shader_paths_dict["lines_fragment"]),
                 axis_length=1.0
+            ),
+            # chord on the line shaders, endpoint dots on the point ones: no new
+            # shader key, so every existing shader_paths_dict keeps working
+            "point_pairs" : PointPair(
+                vertex_src=read_shader_source(self.shader_paths_dict["lines_vertex"]),
+                fragment_src=read_shader_source(self.shader_paths_dict["lines_fragment"]),
+                point_vertex_src=read_shader_source(self.shader_paths_dict["points_vertex"]),
+                point_fragment_src=read_shader_source(self.shader_paths_dict["points_fragment"])
             )
         }
         glfw.set_framebuffer_size_callback(

@@ -1,0 +1,15 @@
+name: 2DCGA
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.14
+  - numpy=2.5
+  - scipy=1.18
+  - pyopengl=3.1
+  - zarr            # only needed to convert the push-t dataset
+  - ipykernel       # notebooks in example/push-t/playground
+  - pip
+  - pip:
+      - glfw==2.10.2
